@@ -16,6 +16,7 @@ const addButton = document.getElementById("addButton");
  */
 function validateForm () {
     let valid = true;
+    //validate first name has input
     if(!firstNameInput.checkValidity()){
         valid = false;
         const errorText = document.createTextNode("This field is required");
@@ -30,6 +31,7 @@ function validateForm () {
             errorText.innerText = "";
         }, 1000); 
     } 
+    //validate first name length
     if(parseInt(firstNameInput.value.length) < 2){
         valid = false;
         const errorLabelfNameLength = document.createElement("label");
@@ -43,6 +45,7 @@ function validateForm () {
             errorTextfNameLength.innerText = "";
         }, 1000); 
     }
+    //validate last name
     if(!lastNameInput.checkValidity()){
         valid = false;
         lastNameErrorLabel.style.display = "inline";
@@ -50,10 +53,16 @@ function validateForm () {
             lastNameErrorLabel.style.display = "none";
         }, 1000); 
     }
-   
-    
-    
-
+    //validate locker combination
+    const lockerComboRegEx = new RegExp(/^([1-9]|[1-9][0-9])-([1-9]|[1-9][0-9])-([1-9]|[1-9][0-9])$/);
+    if(!lockerComboRegEx.test(comboInput)){
+        valid = false;
+        document.getElementById("combinationError").innerHTML = `<label for="combination" class="error">Please use a #-#-# format</label>`;
+        setTimeout(function(){
+            document.getElementById("combinationError").innerHTML = "";
+        }, 1000);  
+    } 
+    return valid;
 }
 
 
@@ -64,8 +73,19 @@ function validateForm () {
  * @returns 	{HTML element}	p	A paragraph element that summarizes the information collected.
  */
 
+function createSummaryNode(){
+    let summPar = document.createElement("p");
+    let summParText = document.createTextNode(`${lastNameInput.value}, ${firstNameInput.value}, locker: ${lockerNumberInput.value}, combination: ${comboInput.value}`);
+    summPar.appendChild(summParText);
+    summPar.setAttribute("id", "lockersAdded");
+
+    return summPar;
+}
+
 
 /* code to run on load below */
+
+
 lockerNumberInput.addEventListener("change", function(){
     //needs adjusting - typing in a number doesn't trigger event listener. 
     if(parseInt(lockerNumberInput.value) < 1)
@@ -76,11 +96,13 @@ lockerNumberInput.addEventListener("change", function(){
     } else {
         this.lockerNumberInput = lockerNumberInput;
     }
-    console.log(lockerNumberInput.value);
 })
 
 addButton.addEventListener("click", function(event)
 {
     event.preventDefault();
-    validateForm();
+    let formValid = validateForm();
+    if(formValid){
+        document.getElementById("lockersAdded").parentElement.replaceChild(createSummaryNode(), document.getElementById("lockersAdded"));
+    }
 });
