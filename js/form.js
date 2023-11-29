@@ -54,8 +54,8 @@ function validateForm () {
         }, 1000); 
     }
     //validate locker combination
-    const lockerComboRegEx = new RegExp(/^([1-9]|[1-9][0-9])-([1-9]|[1-9][0-9])-([1-9]|[1-9][0-9])$/);
-    if(!lockerComboRegEx.test(comboInput)){
+    const lockerComboRegEx = new RegExp(`^([1-9]|[1-9][0-9])-([1-9]|[1-9][0-9])-([1-9]|[1-9][0-9])$`);
+    if(!lockerComboRegEx.test(comboInput.value)){
         valid = false;
         document.getElementById("combinationError").innerHTML = `<label for="combination" class="error">Please use a #-#-# format</label>`;
         setTimeout(function(){
